@@ -223,7 +223,6 @@ jobs:
           fi
 
           gh pr merge "$pr_url" \
-            --auto \
             --squash \
             --delete-branch \
             --match-head-commit "$(git rev-parse HEAD)"
