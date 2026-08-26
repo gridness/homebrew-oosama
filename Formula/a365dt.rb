@@ -4,6 +4,7 @@ class A365dt < Formula
   version "2.4.0"
   license "Apache-2.0"
   depends_on "ffmpeg-full" => :optional
+  deprecate! date: "2026-07-09", because: "project has migrated to a365. Please reinstall using brew install gridness/oosama/a365"
   on_macos do
     depends_on arch: :arm64
     on_arm do
