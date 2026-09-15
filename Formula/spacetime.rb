@@ -1,16 +1,16 @@
 class Spacetime < Formula
   desc "Command-line interface for SpacetimeDB"
   homepage "https://spacetimedb.com"
-  version "2.10.0"
+  version "2.10.1"
 
   depends_on :macos
 
   if Hardware::CPU.arm?
-    url "https://github.com/clockworklabs/SpacetimeDB/releases/download/v2.10.0/spacetime-aarch64-apple-darwin.tar.gz"
-    sha256 "9b56140b88af8ba11277c24fbb8177d20196b19252ee6890390a3ab5f2773dea"
+    url "https://github.com/clockworklabs/SpacetimeDB/releases/download/v2.10.1/spacetime-aarch64-apple-darwin.tar.gz"
+    sha256 "ecbd76e9e9a2b36f3b08763616182ad740522426c35043c39dff55f6470d0c37"
   else
-    url "https://github.com/clockworklabs/SpacetimeDB/releases/download/v2.10.0/spacetime-x86_64-apple-darwin.tar.gz"
-    sha256 "2ffa8a4f417a19c123f2af50cba20b43331c61fe25306848391a5ad4f427969d"
+    url "https://github.com/clockworklabs/SpacetimeDB/releases/download/v2.10.1/spacetime-x86_64-apple-darwin.tar.gz"
+    sha256 "8599a94ac67806c4515926462454a59476502216d1949d0077884717288a4873"
   end
 
   def caveats
