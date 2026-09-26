@@ -1,16 +1,16 @@
 class Spiraler < Formula
   desc "Local asset studio for coherent visual families"
   homepage "https://github.com/gridness/spiraler"
-  version "0.1.8"
+  version "0.1.9"
   depends_on :linux
 
   on_arm do
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_aarch64.AppImage", using: :nounzip
-    sha256 "99d49a42a79e3332c528d1f6fb5599ff66ee443f32ccc0d135581f072b94c842"
+    sha256 "6f2ec7912b069121fd0132f0ff012a933e71f32f63c476d2c0dadf7313d0ee85"
   end
   on_intel do
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_x86_64.AppImage", using: :nounzip
-    sha256 "7d4d91adf4c4656eaa78267c818808538a3c1b6c831bf044203df6b833159e63"
+    sha256 "1ba333d3de0f901f598f660d51ef03dfe0e1c77cb6839949bf7192363a52bb44"
   end
 
   def install
