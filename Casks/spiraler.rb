@@ -1,11 +1,11 @@
 cask "spiraler" do
-  version "0.1.5"
+  version "0.1.8"
   name "Spiraler"
   desc "Local asset studio for coherent visual families"
   homepage "https://github.com/gridness/spiraler"
 
   on_macos do
-    sha256 "2620d787b85149176a2a46e0342d547d4438ee397f31a2d604179bf84e25b568"
+    sha256 "acf63e130a99aef656d16e6e5729893c76f2d8f4a1348087baf4bbd58e4a6c75"
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_aarch64.dmg"
     depends_on arch: :arm64
     depends_on cask: "codex"
@@ -20,7 +20,7 @@ cask "spiraler" do
 
   on_linux do
     arch arm: "aarch64", intel: "x86_64"
-    sha256 arm64_linux: "636976f5cf8e3c9f56c04c80d47b93fd78927a930af40740d1c9329efefbe7b4", x86_64_linux: "cc31e4e7622450e73f0e5e51fc52996026be123598a2b06da0aeec08b2a0cbe7"
+    sha256 arm64_linux: "99d49a42a79e3332c528d1f6fb5599ff66ee443f32ccc0d135581f072b94c842", x86_64_linux: "7d4d91adf4c4656eaa78267c818808538a3c1b6c831bf044203df6b833159e63"
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_#{arch}.AppImage"
     container type: :naked
 

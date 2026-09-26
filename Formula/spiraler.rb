@@ -1,16 +1,16 @@
 class Spiraler < Formula
   desc "Local asset studio for coherent visual families"
   homepage "https://github.com/gridness/spiraler"
-  version "0.1.5"
+  version "0.1.8"
   depends_on :linux
 
   on_arm do
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_aarch64.AppImage", using: :nounzip
-    sha256 "636976f5cf8e3c9f56c04c80d47b93fd78927a930af40740d1c9329efefbe7b4"
+    sha256 "99d49a42a79e3332c528d1f6fb5599ff66ee443f32ccc0d135581f072b94c842"
   end
   on_intel do
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_x86_64.AppImage", using: :nounzip
-    sha256 "cc31e4e7622450e73f0e5e51fc52996026be123598a2b06da0aeec08b2a0cbe7"
+    sha256 "7d4d91adf4c4656eaa78267c818808538a3c1b6c831bf044203df6b833159e63"
   end
 
   def install
@@ -19,8 +19,12 @@ class Spiraler < Formula
     system "./#{appimage}", "--appimage-extract"
     libexec.install Pathname("squashfs-root").children
     (bin/"spiraler").write_env_script libexec/"AppRun", APPDIR: libexec
-    (share/"applications").install Dir[libexec/"usr/share/applications/*.desktop"]
-    share.install libexec/"usr/share/icons" if (libexec/"usr/share/icons").directory?
+    # AppRun follows the AppDir's desktop-file symlink. Keep its target in place.
+    (share/"applications").install_symlink Dir[libexec/"usr/share/applications/*.desktop"]
+    if (libexec/"usr/share/icons").directory?
+      (share/"icons").mkpath
+      cp_r (libexec/"usr/share/icons").children, share/"icons"
+    end
   end
 
   def caveats
