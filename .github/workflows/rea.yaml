@@ -201,3 +201,23 @@ jobs:
 
           echo "::error::Could not push the formula update to main."
           exit 1
+
+  verify-homebrew:
+    needs: publish
+    runs-on: macos-15
+    timeout-minutes: 10
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+    steps:
+      - name: Install and test the published formula
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          brew tap gridness/oosama
+          brew install gridness/oosama/rea
+          brew test gridness/oosama/rea
+          test -z "$(brew deps gridness/oosama/rea)"
+          prefix="$(brew --prefix gridness/oosama/rea)"
+          env PATH=/usr/bin:/bin "${prefix}/bin/rea" --version
+          env PATH=/usr/bin:/bin "${prefix}/bin/rea-agents" --version
