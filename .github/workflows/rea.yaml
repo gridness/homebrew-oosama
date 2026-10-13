@@ -101,7 +101,8 @@ jobs:
       - name: Set up upstream build toolchain
         uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          # Pin the tested patch; Mac runner caches can lag behind LTS releases.
+          node-version: "24.21.0"
           package-manager-cache: false
 
       - name: Build and test standalone distribution
