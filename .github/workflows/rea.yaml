@@ -1,0 +1,202 @@
+name: Build and update Rea formula
+
+on:
+  schedule:
+    - cron: "43 */6 * * *"
+  workflow_dispatch:
+
+# ASVS 13.2.2, 15.2.5: upstream builds have no repository write permission.
+permissions:
+  contents: read
+
+concurrency:
+  group: update-rea-formula
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.release.outputs.build }}
+      source_sha: ${{ steps.release.outputs.source_sha }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Check latest stable Rea release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tag="$(gh api repos/morluto/rea/releases/latest --jq '.tag_name')"
+          # ASVS 2.2.1: allow only stable release versions in paths and outputs.
+          if [[ ! "$tag" =~ ^rea-agents-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "::error::Unexpected upstream release tag: $tag"
+            exit 1
+          fi
+          version="${BASH_REMATCH[1]}"
+          source_sha="$(gh api "repos/morluto/rea/commits/${tag}" --jq '.sha')"
+          [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$source_sha" >> "$GITHUB_OUTPUT"
+
+          assets="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/rea-v${version}" \
+            --jq '.assets[].name' 2>/dev/null || true)"
+          complete=true
+          for platform in aarch64-apple-darwin x86_64-apple-darwin \
+              aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do
+            if ! grep -Fxq "rea-v${version}-${platform}.tar.gz" <<<"$assets"; then
+              complete=false
+            fi
+          done
+
+          if [[ "$complete" == true ]] &&
+             [[ -f Formula/rea.rb ]] &&
+             grep -Fxq "  version \"${version}\"" Formula/rea.rb; then
+            echo "Rea ${version} is already packaged."
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.build == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            platform: aarch64-apple-darwin
+          - runner: macos-15-intel
+            platform: x86_64-apple-darwin
+          - runner: ubuntu-22.04
+            platform: x86_64-unknown-linux-gnu
+          - runner: ubuntu-24.04-arm
+            platform: aarch64-unknown-linux-gnu
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - name: Check out build scripts
+        uses: actions/checkout@v6
+        with:
+          path: tap
+          persist-credentials: false
+
+      - name: Check out upstream release
+        uses: actions/checkout@v6
+        with:
+          repository: morluto/rea
+          ref: ${{ needs.check.outputs.source_sha }}
+          path: source
+          persist-credentials: false
+
+      - name: Set up upstream build toolchain
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: source/.nvmrc
+          package-manager-cache: false
+
+      - name: Build and test standalone distribution
+        env:
+          VERSION: ${{ needs.check.outputs.version }}
+          PLATFORM: ${{ matrix.platform }}
+        shell: bash
+        run: |
+          bash tap/scripts/build-rea.sh \
+            "$GITHUB_WORKSPACE/source" "$VERSION" "$PLATFORM" "$GITHUB_WORKSPACE/packages"
+
+      - name: Upload standalone archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-${{ matrix.platform }}
+          path: packages/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: [check, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download standalone archives
+        uses: actions/download-artifact@v4
+        with:
+          pattern: rea-*
+          merge-multiple: true
+          path: packages
+
+      - name: Publish archives and update formula
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.check.outputs.version }}
+          SOURCE_SHA: ${{ needs.check.outputs.source_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_tag="rea-v${VERSION}"
+          for platform in aarch64-apple-darwin x86_64-apple-darwin \
+              aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do
+            archive="packages/rea-v${VERSION}-${platform}.tar.gz"
+            test "$(tar -xOf "$archive" manifest.json | jq -r '.version')" = "$VERSION"
+            test "$(tar -xOf "$archive" manifest.json | jq -r '.platform')" = "$platform"
+            test "$(tar -xOf "$archive" manifest.json | jq -r '.source_sha')" = "$SOURCE_SHA"
+          done
+
+          if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            assets="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${release_tag}" --jq '.assets[].name')"
+            for archive in packages/*.tar.gz; do
+              asset="$(basename "$archive")"
+              if grep -Fxq "$asset" <<<"$assets"; then
+                # Preserve published bytes and checksums when retrying a run.
+                gh release download "$release_tag" --repo "$GITHUB_REPOSITORY" \
+                  --pattern "$asset" --dir packages --clobber
+              else
+                gh release upload "$release_tag" "$archive" --repo "$GITHUB_REPOSITORY"
+              fi
+            done
+          else
+            gh release create "$release_tag" packages/*.tar.gz \
+              --repo "$GITHUB_REPOSITORY" --draft --target "$GITHUB_SHA" \
+              --title "Rea ${VERSION}" --latest=false \
+              --notes "Standalone Homebrew builds of morluto/rea at ${SOURCE_SHA}. Install with: brew install gridness/oosama/rea"
+          fi
+
+          # Publish only after all platforms are present.
+          gh release edit "$release_tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest=false
+          python3 scripts/update-rea-formula.py "$VERSION" "$GITHUB_REPOSITORY" packages
+          ruby -c Formula/rea.rb
+          git add Formula/rea.rb
+          if git diff --cached --quiet -- Formula/rea.rb; then
+            echo "Already at Rea ${VERSION}."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "rea ${VERSION}"
+
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+
+          echo "::error::Could not push the formula update to main."
+          exit 1

@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: update-spacetime-formula
@@ -22,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.repository.default_branch }}
+          ref: main
 
       - name: Update formula from latest SpacetimeDB release
         id: update
@@ -166,63 +165,28 @@ jobs:
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Commit update
+      - name: Commit and push update to main
         if: steps.update.outputs.changed == 'true'
-        id: commit
         env:
           VERSION: ${{ steps.update.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
-
-          branch="automation/spacetime-${VERSION}"
 
           git config user.name "github-actions[bot]"
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git checkout -B "$branch"
-
           git add Formula/spacetime.rb
           git commit -m "spacetime ${VERSION}"
 
-          git push --force origin "$branch"
+          # Rebase if another formula updater pushed while this job was running.
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
 
-          echo "branch=$branch" >> "$GITHUB_OUTPUT"
-
-      - name: Open and auto-merge pull request
-        if: steps.update.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          BRANCH: ${{ steps.commit.outputs.branch }}
-          VERSION: ${{ steps.update.outputs.version }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          pr_url="$(
-            gh pr list \
-              --head "$BRANCH" \
-              --base "$DEFAULT_BRANCH" \
-              --state open \
-              --json url \
-              --jq '.[0].url // empty'
-          )"
-
-          if [[ -z "$pr_url" ]]; then
-            pr_url="$(
-              gh pr create \
-                --base "$DEFAULT_BRANCH" \
-                --head "$BRANCH" \
-                --title "spacetime ${VERSION}" \
-                --body "Automated Homebrew formula update for SpacetimeDB ${VERSION}."
-            )"
-          else
-            echo "PR already exists: $pr_url"
-          fi
-
-          gh pr merge "$pr_url" \
-            --squash \
-            --delete-branch \
-            --match-head-commit "$(git rev-parse HEAD)"
+          echo "::error::Could not push the formula update to main."
+          exit 1

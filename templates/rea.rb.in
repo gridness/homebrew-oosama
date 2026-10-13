@@ -1,0 +1,55 @@
+class Rea < Formula
+  desc "Reverse engineer applications and binaries from your terminal or agent"
+  homepage "https://github.com/morluto/rea"
+  version "${version}"
+  license "MIT"
+
+  on_macos do
+    depends_on macos: :sonoma
+
+    on_arm do
+      url "https://github.com/${repository}/releases/download/rea-v${version}/rea-v${version}-aarch64-apple-darwin.tar.gz"
+      sha256 "${macos_arm_sha}"
+    end
+    on_intel do
+      url "https://github.com/${repository}/releases/download/rea-v${version}/rea-v${version}-x86_64-apple-darwin.tar.gz"
+      sha256 "${macos_intel_sha}"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/${repository}/releases/download/rea-v${version}/rea-v${version}-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "${linux_arm_sha}"
+    end
+    on_intel do
+      url "https://github.com/${repository}/releases/download/rea-v${version}/rea-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "${linux_intel_sha}"
+    end
+  end
+
+  def install
+    libexec.install "rea", "app", "manifest.json", "RUNTIME_LICENSE"
+    (libexec/"command-path").write "#{opt_bin}/rea\n"
+    bin.install_symlink libexec/"rea"
+    bin.install_symlink libexec/"rea" => "rea-agents"
+  end
+
+  def caveats
+    <<~EOS
+      Set up your agent with:
+
+        rea setup
+
+      Upgrade this Homebrew installation with:
+
+        brew upgrade rea
+    EOS
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/rea --version")
+    assert_match "setup", shell_output("#{bin}/rea --help")
+    assert_match version.to_s, shell_output("#{bin}/rea-agents --version")
+  end
+end
