@@ -18,7 +18,7 @@ try {
 // Upstream workers pass V8 limits before their script. SEA accepts runtime
 // options through --node-options, preserving those limits in the embedded VM.
 while (
-  /^(?:--(?:max-old-space-size|max-semi-space-size|v8-pool-size|stack_size)=\d+|--expose-gc)$/.test(args[0] ?? "")
+  /^(?:--(?:max-old-space-size|max-semi-space-size|v8-pool-size|stack_size)=\d+|--(?:expose-gc|single-threaded))$/.test(args[0] ?? "")
 ) {
   runtimeFlags.push(args.shift());
 }

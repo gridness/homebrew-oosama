@@ -32,7 +32,15 @@ with tempfile.TemporaryDirectory(prefix="rea-standalone-test-") as directory:
     (fixture / "package.json").write_text(json.dumps({
         "name": "standalone-smoke", "version": "1.0.0", "type": "module",
     }))
-    (fixture / "index.js").write_text("export function greet(name) { return 'Hello, ' + name; }\n")
+    (fixture / "index.js").write_text(
+        "export function greet(name) { return 'Hello, ' + name; }\n"
+        "//# sourceMappingURL=index.js.map\n"
+    )
+    (fixture / "index.js.map").write_text(json.dumps({
+        "version": 3, "file": "index.js", "sources": ["original.ts"],
+        "names": [], "mappings": "AAAA",
+        "sourcesContent": ["export function greet(name: string) { return 'Hello, ' + name; }"],
+    }))
     analysis = json.loads(run("analyze-javascript-application", directory, "--json"))
     assert analysis["operation"] == "analyze_javascript_application"
     assert len(analysis["normalized_result"]["graph"]["nodes"]) > 1
@@ -45,6 +53,22 @@ registration = next(
 )
 assert str(executable) in registration["detail"]
 assert "npx" not in registration["detail"]
+
+# Worker startup must apply runtime flags, including source-map worker limits.
+worker_test = executable.parent / "app/.worker-smoke.cjs"
+try:
+    worker_test.write_text(
+        "const v8 = require('node:v8'); console.log(JSON.stringify({"
+        "heapLimit: v8.getHeapStatistics().heap_size_limit, gc: typeof global.gc}));"
+    )
+    worker = json.loads(run(
+        "--max-old-space-size=192", "--max-semi-space-size=8", "--v8-pool-size=1",
+        "--single-threaded", "--expose-gc", "--stack_size=2048", str(worker_test),
+    ))
+    assert worker["heapLimit"] <= 256 * 1024 * 1024
+    assert worker["gc"] == "function"
+finally:
+    worker_test.unlink(missing_ok=True)
 
 # Native PTY addons must launch processes through the embedded runtime.
 pty_module = executable.parent / "app/node_modules/@lydell/node-pty"
