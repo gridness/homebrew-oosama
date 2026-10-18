@@ -1,30 +1,30 @@
 class Rea < Formula
   desc "Reverse engineer applications and binaries from your terminal or agent"
   homepage "https://github.com/morluto/rea"
-  version "6.6.0"
+  version "6.7.0"
   license "MIT"
 
   on_macos do
     depends_on macos: :sonoma
 
     on_arm do
-      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.6.0/rea-v6.6.0-aarch64-apple-darwin.tar.gz"
-      sha256 "3ea2452b39915db0782dc69d7a114e7e6e02dcb1395bf34f77ad70693a64e3ab"
+      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.7.0/rea-v6.7.0-aarch64-apple-darwin.tar.gz"
+      sha256 "f45cd196c5ee0bdcb4d5bb5ed589205c257236be9a939cc86ea935dc7deb1c46"
     end
     on_intel do
-      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.6.0/rea-v6.6.0-x86_64-apple-darwin.tar.gz"
-      sha256 "1fdee9e7b80533b7fda2f7e2b45c46dcaa8f19060f61bd98120b0e32cf6522de"
+      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.7.0/rea-v6.7.0-x86_64-apple-darwin.tar.gz"
+      sha256 "6163f1504ccb2cf9fad300a90c42611f63e291cd769a4840958db61d8a14edd0"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.6.0/rea-v6.6.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "5ed69585d4139a09f14c069a8fc6e008795fc49dc0577545212965053c9f9113"
+      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.7.0/rea-v6.7.0-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "e9ab0565b6ebac648790debce9a6fb23ffb73292d8e0ff79dc416dcb8d5fa764"
     end
     on_intel do
-      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.6.0/rea-v6.6.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "e1c1a11552f44c865b719c6f2fd3064f068adbd25fafc3d9311730c1b2ac05a6"
+      url "https://github.com/gridness/homebrew-oosama/releases/download/rea-v6.7.0/rea-v6.7.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "96fc1a5b0038bf7eca5ab1c9f4c535764e96abb28ba315de2bfef3a681607051"
     end
   end
 
