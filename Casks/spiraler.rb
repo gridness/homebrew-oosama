@@ -4,6 +4,8 @@ cask "spiraler" do
   desc "Local asset studio for coherent visual families"
   homepage "https://github.com/gridness/spiraler"
 
+  deprecate! date: "2026-11-06", because: :unmaintained
+
   on_macos do
     sha256 "2b1b914db93ab04e52736ac44c27bfda4696dc99344da687dc10a870b1474828"
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_aarch64.dmg"
