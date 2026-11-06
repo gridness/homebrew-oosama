@@ -4,6 +4,8 @@ class Spiraler < Formula
   version "0.1.9"
   depends_on :linux
 
+  deprecate! date: "2026-11-06", because: :unmaintained
+
   on_arm do
     url "https://github.com/gridness/spiraler/releases/download/v#{version}/Spiraler_#{version}_aarch64.AppImage", using: :nounzip
     sha256 "6f2ec7912b069121fd0132f0ff012a933e71f32f63c476d2c0dadf7313d0ee85"
