@@ -22,6 +22,9 @@ class A365 < Formula
   homepage "https://github.com/gridness/a365"
   version "3.0.1"
   license "Apache-2.0"
+
+  deprecate! date: "2026-11-06", because: :unmaintained
+
   depends_on "ffmpeg-full" => :optional
   on_macos do
     depends_on arch: :arm64
