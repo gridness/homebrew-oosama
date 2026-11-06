@@ -1,0 +1,49 @@
+name: Update cargo-cleaner formula
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-cargo-cleaner-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Update the formula from the latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE: gridness/cargo-cleaner
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$(gh release list --repo "$SOURCE" --exclude-drafts --exclude-pre-releases \
+            --limit 1 --json tagName --jq '.[0].tagName // empty')"
+          if [[ -z "$tag" ]]; then
+            echo "No cargo-cleaner releases yet."
+            exit 0
+          fi
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          formula="$RUNNER_TEMP/cargo-cleaner.rb"
+          gh api "repos/$SOURCE/releases/tags/$tag" | python3 scripts/update-cargo-cleaner-formula.py > "$formula"
+          ruby -c "$formula"
+          cp "$formula" Formula/cargo-cleaner.rb
+          git add -- Formula/cargo-cleaner.rb
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m "Updated cargo-cleaner to ${tag#v}"
+          git pull --rebase origin main
+          git push origin HEAD:main
