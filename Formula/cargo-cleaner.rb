@@ -1,30 +1,30 @@
 class CargoCleaner < Formula
   desc "Find and clean Cargo build caches"
   homepage "https://github.com/gridness/cargo-cleaner"
-  version "0.1.0"
+  version "0.2.0"
   license "MIT"
 
   on_macos do
     depends_on macos: :ventura
 
     on_arm do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.1.0/cargo-cleaner-v0.1.0-aarch64-apple-darwin.tar.gz"
-      sha256 "c2a124d648338afce111b62cea373c5e906a0fed2a8407396e7c007154653ecb"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-aarch64-apple-darwin.tar.gz"
+      sha256 "5067e64050510b939b9fe3de81cde6067b245a6a5699ac967e4b80227a0fe332"
     end
     on_intel do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.1.0/cargo-cleaner-v0.1.0-x86_64-apple-darwin.tar.gz"
-      sha256 "6661943f9bdaa972ba72d1c9c367384fc5ff44cb7ef4589740665840712ed79e"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-x86_64-apple-darwin.tar.gz"
+      sha256 "b5ef4ec03b9ac20eeff57d6aa0cea1d9257d28d71ae744915848b9bf4c63393f"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.1.0/cargo-cleaner-v0.1.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "743a3488e74cd2b14e917688f8c32135e5c6cd3ca682520f582ec67a14f82a54"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "3f7ad4cc94c3b09e0749ff1c218c412553d0a3b4a3bd108c4a1f8dc7144b3966"
     end
     on_intel do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.1.0/cargo-cleaner-v0.1.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "1dbf944c8853827e7e3ffdf7f716a3eba2986477c654ef0ac402ecff6854b1fa"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "4bb2973918394fb27f030255c286bc3a8746be9d2910d091cf994f976b7058e2"
     end
   end
 
