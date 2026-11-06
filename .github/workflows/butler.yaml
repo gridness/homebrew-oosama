@@ -1,0 +1,56 @@
+name: Update Butler formula
+
+on:
+  schedule:
+    - cron: "31 */6 * * *"
+  workflow_dispatch:
+
+# ASVS 13.2.2: Only grant the permission needed to push the formula update.
+permissions:
+  contents: write
+
+concurrency:
+  group: update-butler-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Check itch.io and update the formula
+        run: |
+          python3 scripts/update-butler-formula.py
+          ruby -c Formula/butler.rb
+
+      - name: Commit and push update to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add Formula/butler.rb
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+
+          version="$(sed -n 's/^  version "\([0-9.]*\)"$/\1/p' Formula/butler.rb)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Updated Butler to ${version}"
+
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+
+          echo "::error::Could not push the Butler formula update to main."
+          exit 1
