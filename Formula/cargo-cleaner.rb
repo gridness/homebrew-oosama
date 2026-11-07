@@ -1,30 +1,30 @@
 class CargoCleaner < Formula
   desc "Find and clean Cargo build caches"
   homepage "https://github.com/gridness/cargo-cleaner"
-  version "0.2.0"
+  version "0.2.1"
   license "MIT"
 
   on_macos do
     depends_on macos: :ventura
 
     on_arm do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-aarch64-apple-darwin.tar.gz"
-      sha256 "5067e64050510b939b9fe3de81cde6067b245a6a5699ac967e4b80227a0fe332"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.1/cargo-cleaner-v0.2.1-aarch64-apple-darwin.tar.gz"
+      sha256 "8d148eda2f2b18168efc87709073582aac745987d7451fd51705953897d84d9f"
     end
     on_intel do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-x86_64-apple-darwin.tar.gz"
-      sha256 "b5ef4ec03b9ac20eeff57d6aa0cea1d9257d28d71ae744915848b9bf4c63393f"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.1/cargo-cleaner-v0.2.1-x86_64-apple-darwin.tar.gz"
+      sha256 "1c8b95d465bb7f271590be43a48c5920d064fbeabc9feb602bfaf36ce9f49432"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "3f7ad4cc94c3b09e0749ff1c218c412553d0a3b4a3bd108c4a1f8dc7144b3966"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.1/cargo-cleaner-v0.2.1-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "d11a7fea4257398faaf951fa5922d9549bc52abac6852e3f09e24db43c8eaf38"
     end
     on_intel do
-      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.0/cargo-cleaner-v0.2.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "4bb2973918394fb27f030255c286bc3a8746be9d2910d091cf994f976b7058e2"
+      url "https://github.com/gridness/cargo-cleaner/releases/download/v0.2.1/cargo-cleaner-v0.2.1-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "f18e924f1ddc4c186a96df5be0efadc2a5b90a1a737826495382cfc6a1800966"
     end
   end
 
