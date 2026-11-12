@@ -1,13 +1,13 @@
 class TianraGm < Formula
   desc "Tianra Game Master tools for AI agents and humans"
   homepage "https://github.com/gridness/tianra-builds"
-  version "0.1.0.2"
+  version "0.1.0.4"
 
   depends_on macos: :sequoia
   depends_on arch: :arm64
 
-  url "https://github.com/gridness/tianra-builds/releases/download/tianra-gm-v0.1.0-build.2/tianra-gm-0.1.0-build-2-macos-aarch64.tar.gz"
-  sha256 "d7777951975375e39cfe33ac7d997f11a9561b5a6c7fb7fbb5d2ef62f30d90e6"
+  url "https://github.com/gridness/tianra-builds/releases/download/tianra-gm-v0.1.0-build.4/tianra-gm-0.1.0-build-4-macos-aarch64.tar.gz"
+  sha256 "8f4135b9c5b18daf176e9ed63aaf608f2fa7ff9e5af936aa911011901e174e40"
 
   def install
     bin.install "bin/tianra-gm"
