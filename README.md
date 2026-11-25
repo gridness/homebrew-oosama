@@ -27,6 +27,12 @@ Install the itch.io Butler CLI on macOS or Linux with:
 brew install gridness/oosama/butler
 ```
 
+Install NoSpeaker on macOS 12 or later with a Force Touch trackpad:
+
+```bash
+brew install gridness/oosama/nospeaker
+```
+
 ## Upgrade
 
 ```bash
@@ -47,5 +53,8 @@ and pushes the formula URLs, version, and checksums directly to `main`.
 Butler checks itch.io's stable download channels every six hours. When all four
 macOS and Linux channels agree on a newer release, it validates their archives
 and pushes the new version and checksums directly to `main`.
+
+NoSpeaker checks GitHub for stable releases every six hours, verifies the
+macOS archive, and pushes formula updates directly to `main`.
 
 The workflows also support manual runs from the GitHub Actions tab.
