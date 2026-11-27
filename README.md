@@ -27,6 +27,19 @@ Install the itch.io Butler CLI on macOS or Linux with:
 brew install gridness/oosama/butler
 ```
 
+Install the Impeccable CLI on macOS or Linux with:
+
+```bash
+brew install gridness/oosama/impeccable
+```
+
+To use the Homebrew binary with an existing Impeccable skill installation, set
+`IMPECCABLE_BIN` in the environment that launches your agent:
+
+```bash
+export IMPECCABLE_BIN="$(brew --prefix impeccable)/bin/impeccable"
+```
+
 Install NoSpeaker on macOS 12 or later with a Force Touch trackpad:
 
 ```bash
@@ -53,6 +66,10 @@ and pushes the formula URLs, version, and checksums directly to `main`.
 Butler checks itch.io's stable download channels every six hours. When all four
 macOS and Linux channels agree on a newer release, it validates their archives
 and pushes the new version and checksums directly to `main`.
+
+Impeccable checks for stable engine releases every six hours. It verifies the
+macOS and Linux binaries for ARM64 and x86-64 before pushing formula updates to
+`main`.
 
 NoSpeaker checks GitHub for stable releases every six hours, verifies the
 macOS archive, and pushes formula updates directly to `main`.
