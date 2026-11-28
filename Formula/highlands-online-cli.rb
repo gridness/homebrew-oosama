@@ -2,9 +2,9 @@ class HighlandsOnlineCli < Formula
   desc "Manage Highlands Online accounts, flags and game releases"
   homepage "https://github.com/gridness/highlands-online"
   url "https://github.com/gridness/highlands-online.git",
-      tag:      "hlo-v0.1.1",
-      revision: "4c40fbbdd5577cb011fcfe668a02901cdd9f30ed"
-  version "0.1.1"
+      tag:      "hlo-v0.1.2",
+      revision: "227be39269e515828b6444f9f99f256bca071cff"
+  version "0.1.2"
 
   depends_on "node@24"
 
