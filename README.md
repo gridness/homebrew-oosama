@@ -27,6 +27,13 @@ Install the itch.io Butler CLI on macOS or Linux with:
 brew install gridness/oosama/butler
 ```
 
+Install Cloudflare's `cf` CLI on macOS or Linux.
+
+```bash
+brew install gridness/oosama/cloudflare-cli
+cf --version
+```
+
 Install the Impeccable CLI on macOS or Linux with:
 
 ```bash
@@ -56,6 +63,9 @@ brew upgrade <formula>
 
 SpacetimeDB checks for new releases every six hours and pushes formula updates
 directly to `main`.
+
+Cloudflare CLI checks npm's `latest` tag every six hours, verifies the published
+archive, and pushes formula updates directly to `main`.
 
 Rea checks for new stable releases every six hours and builds standalone archives
 for macOS and Linux on ARM64 and x86-64. Each build tests the CLI, a JavaScript
