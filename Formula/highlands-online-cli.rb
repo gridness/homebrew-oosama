@@ -1,10 +1,10 @@
 class HighlandsOnlineCli < Formula
-  desc "Manage Highlands Online accounts, flags and game releases"
+  desc "Manage Highlands Online accounts, flags, items and game releases"
   homepage "https://github.com/gridness/highlands-online"
   url "https://github.com/gridness/highlands-online.git",
-      tag:      "hlo-v0.1.2",
-      revision: "227be39269e515828b6444f9f99f256bca071cff"
-  version "0.1.2"
+      tag:      "hlo-v0.1.3",
+      revision: "b89fe8fce18a98d0080783c87c7442dab3dd01d0"
+  version "0.1.3"
 
   depends_on "node@24"
 
@@ -22,6 +22,8 @@ class HighlandsOnlineCli < Formula
     commands = help.fetch("commands").map { |command| command.fetch("path") }
     assert_includes commands, "release"
     assert_includes commands, "flags condition"
+    assert_includes commands, "users backpack add"
+    assert_includes commands, "items list"
     servers = JSON.parse(shell_output("#{bin}/hlo servers list --json")).fetch("servers")
     assert_equal "shared-dev", servers.first.fetch("name")
   end
