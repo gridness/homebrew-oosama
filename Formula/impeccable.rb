@@ -1,28 +1,28 @@
 class Impeccable < Formula
   desc "Command-line engine for the Impeccable design skill"
   homepage "https://impeccable.style/"
-  version "0.1.31"
+  version "0.1.32"
   license "Apache-2.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.31/impeccable-darwin-arm64", using: :nounzip
-      sha256 "0d96cf802af6c52f3ed0925a409c7f4a1eda6a4c4b8274ff545b1d23e8dd6ae6"
+      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.32/impeccable-darwin-arm64", using: :nounzip
+      sha256 "36daa783fff56b9bc08836a311cf8cbe37cae92017b6e60e944dd06704e49024"
     end
     on_intel do
-      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.31/impeccable-darwin-x64", using: :nounzip
-      sha256 "af28d77242fc345f11ade5075c304beef2e938a3df70905a95f9864708ee0a2a"
+      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.32/impeccable-darwin-x64", using: :nounzip
+      sha256 "bf1e266be92696793fe395c044730e335559f6ac8907c019b6f2d3b6f6e9cff4"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.31/impeccable-linux-arm64", using: :nounzip
-      sha256 "fd488471ae6df728e260bb54c26d0f7fa9235765777f8ee2ff28e9d3dba0dc6b"
+      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.32/impeccable-linux-arm64", using: :nounzip
+      sha256 "02725065db488780d86954f4106be6cc0cdf373e88e7c19891cb4c357889a85d"
     end
     on_intel do
-      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.31/impeccable-linux-x64", using: :nounzip
-      sha256 "01c642862b0e505277bb8810b1a74aacc42b2b38eb24bc69bc0bcf324089be77"
+      url "https://github.com/pbakaus/impeccable/releases/download/engine-v0.1.32/impeccable-linux-x64", using: :nounzip
+      sha256 "739c719efdca8f93e0c7ce1499588c47d26bbde2f8bb63b093cd6a5ccf6a6913"
     end
   end
 
